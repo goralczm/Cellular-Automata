@@ -15,6 +15,10 @@ class GameOfLife:
         self.grid = [[0] * size[1] for row in range(size[0])]
         self.grid_size = size
 
+    def set_grid(self, grid: List[List[int]]):
+        self.grid = grid
+        self.grid_size = (len(grid), len(grid[0]))
+
     def set_mode(self, mode: Tuple[List[int], List[int]]):
         self.mode = mode
 
@@ -26,7 +30,7 @@ class GameOfLife:
         print('')
 
     def update_grid(self):
-        grid_copy = [[col for col in row] for row in self.grid]
+        grid_copy = self.get_copy()
         for row_index in range(len(self.grid)):
             for col_index in range(len(self.grid[row_index])):
                 if self.grid[row_index][col_index] == 1:
@@ -34,6 +38,9 @@ class GameOfLife:
                 else:
                     self.handle_dead_cell(row_index, col_index, grid_copy)
         self.grid = grid_copy.copy()
+
+    def get_copy(self):
+        return [[col for col in row] for row in self.grid]
 
     def handle_living_cell(self, row_index, col_index, grid_copy):
         living_neighbours = self.get_living_neighbours_count(row_index, col_index)

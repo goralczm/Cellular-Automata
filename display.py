@@ -12,6 +12,7 @@ UPDATE_INTERVAL = 200
 FONT = None
 CURRENT_MODE = 'game_of_life'
 
+MACRO_1 = [[]]
 
 def create_window(grid_size: Tuple):
     grid_size = (grid_size[0] * CELL_SIZE, grid_size[1] * CELL_SIZE)
@@ -72,9 +73,16 @@ def key_events(screen, event):
         if event.key == pygame.K_5:
             set_mode('seed')
 
-        if event.key == pygame.K_BACKSPACE:
+        if event.key == pygame.K_r:
             global game_of_life
             game_of_life = game.GameOfLife(grid_size, modes[CURRENT_MODE])
+
+        if event.key == pygame.K_KP1:
+            global MACRO_1
+            MACRO_1 = game_of_life.get_copy()
+
+        if event.key == pygame.K_KP2 and MACRO_1 != [[]]:
+            game_of_life.set_grid([[col for col in row] for row in MACRO_1])
 
     if event.type == pygame.MOUSEBUTTONDOWN:
         mouse_pos = pygame.mouse.get_pos()
@@ -83,6 +91,10 @@ def key_events(screen, event):
             game.set_cell_living(mouse_pos[0], mouse_pos[1], game_of_life.grid)
         elif event.button == 3:
             game.set_cell_dead(mouse_pos[0], mouse_pos[1], game_of_life.grid)
+
+    if event.type == pygame.MOUSEWHEEL:
+        global UPDATE_INTERVAL
+        UPDATE_INTERVAL += event.y * 10
 
 
 def set_mode(mode):
