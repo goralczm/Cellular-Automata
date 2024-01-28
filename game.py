@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, List
 
 
 def set_cell_living(x, y, grid_copy):
@@ -10,9 +10,13 @@ def set_cell_dead(x, y, grid_copy):
 
 
 class GameOfLife:
-    def __init__(self, size: Tuple):
+    def __init__(self, size: Tuple, mode: Tuple[List[int], List[int]]):
+        self.mode = mode
         self.grid = [[0] * size[1] for row in range(size[0])]
         self.grid_size = size
+
+    def set_mode(self, mode: Tuple[List[int], List[int]]):
+        self.mode = mode
 
     def display_grid(self):
         for row in self.grid:
@@ -34,17 +38,13 @@ class GameOfLife:
     def handle_living_cell(self, row_index, col_index, grid_copy):
         living_neighbours = self.get_living_neighbours_count(row_index, col_index)
 
-        if living_neighbours < 2:
-            set_cell_dead(row_index, col_index, grid_copy)
-        elif living_neighbours < 4:
-            set_cell_living(row_index, col_index, grid_copy)
-        elif living_neighbours > 3:
+        if living_neighbours not in self.mode[0]:
             set_cell_dead(row_index, col_index, grid_copy)
 
     def handle_dead_cell(self, row_index, col_index, grid_copy):
         living_neighbours = self.get_living_neighbours_count(row_index, col_index)
 
-        if living_neighbours == 3:
+        if living_neighbours in self.mode[1]:
             set_cell_living(row_index, col_index, grid_copy)
 
     def get_living_neighbours_count(self, row_index, col_index):
